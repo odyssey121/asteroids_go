@@ -14,13 +14,14 @@ func NewGameScene() *GameScene {
 	return gc
 }
 
-func (g *GameScene) Update() error {
+func (g *GameScene) Update(state *State) error {
 	g.player.Update()
 	return nil
 }
 
 func (g *GameScene) Draw(screen *ebiten.Image) {
 	g.player.Draw(screen)
+	
 }
 
 func (g *GameScene) Layout(outsideWidth, outsideHeight int) (ScreenWidth, ScreenHight int) {
