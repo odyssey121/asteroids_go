@@ -11,7 +11,10 @@ import (
 	"golang.org/x/image/font"
 )
 
-type TitleScene struct{}
+type TitleScene struct {
+	meteors      []*Meteor
+	meteorsCount int
+}
 
 func (t *TitleScene) Draw(screen *ebiten.Image) {
 	drawTxt := "press space to start"
@@ -21,6 +24,9 @@ func (t *TitleScene) Draw(screen *ebiten.Image) {
 	text.Draw(screen, drawTxt, &text.GoTextFace{Source: assets.TitleFont, Size: 48}, op)
 	// tw := widthOfText(assets.TitleFont, drawTxt)
 	// text.Draw(screen, drawTxt, assets.TitleFont, ScreenWidth/2-tw/2, ScreenHeight-200, color.White)
+	for _, m := range t.meteors {
+		m.Draw(screen)
+	}
 }
 
 func (t *TitleScene) Update(state *State) error {
@@ -28,6 +34,18 @@ func (t *TitleScene) Update(state *State) error {
 		state.SceneManager.GoToScene(NewGameScene())
 		return nil
 	}
+
+	if len(t.meteors) < 10 {
+		m := NewMeteor(0.25, &GameScene{}, t.meteorsCount)
+		t.meteors = append(t.meteors, m)
+		t.meteorsCount++
+	}
+
+	for _, m := range t.meteors {
+		m.Update()
+
+	}
+
 	return nil
 }
 

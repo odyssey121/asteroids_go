@@ -4,6 +4,7 @@ import (
 	"embed"
 	"image"
 	_ "image/png"
+	"io/fs"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
@@ -14,6 +15,8 @@ var assets embed.FS
 
 var PlayerSprite = mustLoadImage("images/player.png")
 var TitleFont = mustLoadFontFace("fonts/title.ttf")
+var MeteorsSprites = mustLoadImages("images/meteors/*.png")
+var MeteorsSpritesSmall = mustLoadImages("images/meteors-small/*.png")
 
 func mustLoadFontFace(name string) *text.GoTextFaceSource {
 	r, err := assets.Open(name)
@@ -28,6 +31,22 @@ func mustLoadFontFace(name string) *text.GoTextFaceSource {
 	}
 
 	return ts
+
+}
+
+func mustLoadImages(path string) []*ebiten.Image {
+	matches, err := fs.Glob(assets, path)
+	if err != nil {
+		panic(err)
+	}
+
+	images := make([]*ebiten.Image, len(matches))
+
+	for i, p := range matches {
+		images[i] = mustLoadImage(p)
+	}
+
+	return images
 
 }
 
